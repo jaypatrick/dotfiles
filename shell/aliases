@@ -1,0 +1,59 @@
+# Common shell aliases
+
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ~='cd ~'
+alias -- -='cd -'
+
+# List files
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Grep aliases
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# Git aliases
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline --graph --decorate'
+alias gd='git diff'
+alias gco='git checkout'
+alias gb='git branch'
+
+# System aliases
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+alias ps='ps aux'
+
+# Safety aliases
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Development
+alias py='python3'
+alias pip='pip3'
+alias serve='python3 -m http.server'
+
+# Docker
+alias d='docker'
+alias dc='docker-compose'
+alias docker-clean='docker system prune -af'
+
+# Kubernetes
+alias k='kubectl'
+alias kgp='kubectl get pods'
+alias kgs='kubectl get services'
+alias kgd='kubectl get deployments'
+
+# Common typos
+alias sl='ls'
+alias cd..='cd ..'
