@@ -1,0 +1,69 @@
+# Shell completion configuration
+
+# Bash completion
+if [ -n "$BASH_VERSION" ]; then
+    # Enable bash completion on macOS
+    if [[ -f /usr/local/etc/bash_completion ]]; then
+        source /usr/local/etc/bash_completion
+    elif [[ -f /opt/homebrew/etc/bash_completion ]]; then
+        source /opt/homebrew/etc/bash_completion
+    fi
+
+    # Enable bash completion on Linux
+    if [[ -f /etc/bash_completion ]]; then
+        source /etc/bash_completion
+    elif [[ -f /usr/share/bash-completion/bash_completion ]]; then
+        source /usr/share/bash-completion/bash_completion
+    fi
+
+    # Load custom completions from ~/.bash_completion.d/
+    if [[ -d "$HOME/.bash_completion.d" ]]; then
+        for file in "$HOME/.bash_completion.d"/*; do
+            [[ -f "$file" ]] && source "$file"
+        done
+    fi
+fi
+
+# Git completion
+if command -v git &> /dev/null && [ -n "$BASH_VERSION" ]; then
+    if [[ -f /usr/share/bash-completion/completions/git ]]; then
+        source /usr/share/bash-completion/completions/git
+    elif [[ -f /usr/local/etc/bash_completion.d/git-completion.bash ]]; then
+        source /usr/local/etc/bash_completion.d/git-completion.bash
+    fi
+fi
+
+# Docker completion
+if command -v docker &> /dev/null && [ -n "$BASH_VERSION" ]; then
+    if [[ -f /usr/share/bash-completion/completions/docker ]]; then
+        source /usr/share/bash-completion/completions/docker
+    fi
+fi
+
+# kubectl completion
+if command -v kubectl &> /dev/null; then
+    if [ -n "$BASH_VERSION" ]; then
+        source <(kubectl completion bash 2>/dev/null)
+    elif [ -n "$ZSH_VERSION" ]; then
+        source <(kubectl completion zsh 2>/dev/null)
+    fi
+fi
+
+# Terraform completion
+if command -v terraform &> /dev/null; then
+    if [ -n "$BASH_VERSION" ]; then
+        complete -C "$(which terraform)" terraform
+    fi
+fi
+
+# AWS CLI completion
+if command -v aws_completer &> /dev/null && [ -n "$BASH_VERSION" ]; then
+    complete -C aws_completer aws
+fi
+
+# Homebrew completion (macOS)
+if command -v brew &> /dev/null; then
+    if [[ -f "$(brew --prefix)/etc/bash_completion.d/brew" ]]; then
+        source "$(brew --prefix)/etc/bash_completion.d/brew"
+    fi
+fi

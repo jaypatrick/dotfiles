@@ -1,4 +1,5 @@
 [user]
+    # Will be set during installation
     name = Your Name
     email = your.email@example.com
 
@@ -6,6 +7,14 @@
     editor = vim
     autocrlf = input
     excludesfile = ~/.gitignore_global
+    # Use less as pager with better options
+    pager = less -FRX
+    # Treat whitespace correctly
+    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+    # Speed up commands involving untracked files
+    untrackedCache = true
+    # Use fsmonitor for better performance on large repos
+    fsmonitor = true
 
 [color]
     ui = auto
@@ -56,15 +65,104 @@
 
 [push]
     default = simple
+    # Push tags with commits
+    followTags = true
+    # Auto-setup remote tracking
+    autoSetupRemote = true
 
 [pull]
     rebase = false
+
+[fetch]
+    # Automatically prune deleted remote branches
+    prune = true
+    # Prune tags
+    pruneTags = true
 
 [init]
     defaultBranch = main
 
 [merge]
     tool = vimdiff
+    # Include summaries of merged commits in merge commit messages
+    log = true
+    # Enable conflict markers to show common ancestor
+    conflictstyle = diff3
 
 [diff]
     tool = vimdiff
+    # Use better diff algorithm
+    algorithm = histogram
+    # Detect renames and copies
+    renames = copies
+    # Show submodule changes
+    submodule = log
+    # Use mnemonic prefixes (index, work tree, commit, object) instead of a/b
+    mnemonicPrefix = true
+    # Color moved lines differently
+    colorMoved = default
+
+[status]
+    # Show submodule summary
+    submoduleSummary = true
+    # Show stash count
+    showStash = true
+
+[rebase]
+    # Automatically stash before rebasing
+    autoStash = true
+    # Automatically squash commits marked with "squash!" or "fixup!"
+    autoSquash = true
+
+[rerere]
+    # Remember how conflicts were resolved
+    enabled = true
+    # Auto-stage resolved conflicts
+    autoUpdate = true
+
+[help]
+    # Correct typos automatically
+    autocorrect = 10
+
+[commit]
+    # Use commit template
+    template = ~/.gitmessage
+    # Show diff in commit message editor
+    verbose = true
+
+[log]
+    # Show dates in ISO format
+    date = iso
+
+[blame]
+    # Show original commit date
+    date = short
+    # Use color
+    coloring = highlightRecent
+
+[branch]
+    # Sort branches by most recent commit
+    sort = -committerdate
+
+[tag]
+    # Sort tags by version
+    sort = version:refname
+
+[transfer]
+    # Verify objects on transfer
+    fsckObjects = true
+
+[receive]
+    # Verify objects on receive
+    fsckObjects = true
+
+[filter "lfs"]
+    # Git LFS configuration
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+# Include local gitconfig (not tracked in git)
+[include]
+    path = ~/.gitconfig.local

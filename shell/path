@@ -1,0 +1,97 @@
+# PATH management
+
+# Helper function to safely add to PATH
+add_to_path() {
+    if [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$1:$PATH"
+    fi
+}
+
+# Helper function to safely append to PATH
+append_to_path() {
+    if [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$PATH:$1"
+    fi
+}
+
+# User binaries
+add_to_path "$HOME/bin"
+add_to_path "$HOME/.local/bin"
+
+# Homebrew paths (macOS)
+if [[ -d "/opt/homebrew/bin" ]]; then
+    add_to_path "/opt/homebrew/bin"
+    add_to_path "/opt/homebrew/sbin"
+fi
+
+if [[ -d "/usr/local/bin" ]]; then
+    add_to_path "/usr/local/bin"
+    add_to_path "/usr/local/sbin"
+fi
+
+# Rust
+if [[ -d "$HOME/.cargo/bin" ]]; then
+    add_to_path "$HOME/.cargo/bin"
+fi
+
+# Go
+if [[ -d "$HOME/go/bin" ]]; then
+    add_to_path "$HOME/go/bin"
+fi
+
+# Python (user site-packages)
+if command -v python3 &> /dev/null; then
+    PYTHON_USER_BIN="$(python3 -m site --user-base)/bin"
+    if [[ -d "$PYTHON_USER_BIN" ]]; then
+        add_to_path "$PYTHON_USER_BIN"
+    fi
+fi
+
+# Ruby gems
+if [[ -d "$HOME/.gem/ruby" ]]; then
+    for version in "$HOME/.gem/ruby/"*; do
+        if [[ -d "$version/bin" ]]; then
+            add_to_path "$version/bin"
+        fi
+    done
+fi
+
+# Node.js (npm global)
+if [[ -d "$HOME/.npm-global/bin" ]]; then
+    add_to_path "$HOME/.npm-global/bin"
+fi
+
+# Yarn global
+if [[ -d "$HOME/.yarn/bin" ]]; then
+    add_to_path "$HOME/.yarn/bin"
+fi
+
+# pnpm
+if [[ -d "$HOME/.local/share/pnpm" ]]; then
+    add_to_path "$HOME/.local/share/pnpm"
+fi
+
+# Deno
+if [[ -d "$HOME/.deno/bin" ]]; then
+    add_to_path "$HOME/.deno/bin"
+fi
+
+# Composer (PHP)
+if [[ -d "$HOME/.composer/vendor/bin" ]]; then
+    add_to_path "$HOME/.composer/vendor/bin"
+fi
+
+# .NET Core tools
+if [[ -d "$HOME/.dotnet/tools" ]]; then
+    add_to_path "$HOME/.dotnet/tools"
+fi
+
+# Snap (Linux)
+if [[ -d "/snap/bin" ]]; then
+    append_to_path "/snap/bin"
+fi
+
+# Local overrides
+if [[ -f "$HOME/.path.local" ]]; then
+    source "$HOME/.path.local"
+fi
