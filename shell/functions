@@ -1,0 +1,166 @@
+# Useful shell functions
+
+# Create a directory and cd into it
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
+
+# Extract any archive format
+extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2)   tar xjf "$1"     ;;
+            *.tar.gz)    tar xzf "$1"     ;;
+            *.tar.xz)    tar xJf "$1"     ;;
+            *.bz2)       bunzip2 "$1"     ;;
+            *.rar)       unrar x "$1"     ;;
+            *.gz)        gunzip "$1"      ;;
+            *.tar)       tar xf "$1"      ;;
+            *.tbz2)      tar xjf "$1"     ;;
+            *.tgz)       tar xzf "$1"     ;;
+            *.zip)       unzip "$1"       ;;
+            *.Z)         uncompress "$1"  ;;
+            *.7z)        7z x "$1"        ;;
+            *)           echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Find files and grep in one command
+findgrep() {
+    if [ $# -lt 2 ]; then
+        echo "Usage: findgrep <pattern> <path>"
+        return 1
+    fi
+    find "${2:-.}" -type f -exec grep -l "$1" {} \;
+}
+
+# Create a backup of a file
+backup() {
+    if [ -f "$1" ]; then
+        cp "$1" "$1.backup.$(date +%Y%m%d_%H%M%S)"
+        echo "Backup created: $1.backup.$(date +%Y%m%d_%H%M%S)"
+    else
+        echo "File not found: $1"
+    fi
+}
+
+# Show directory size sorted by size
+dirsize() {
+    du -sh "${1:-.}"/* 2>/dev/null | sort -h
+}
+
+# Create a data URL from a file
+dataurl() {
+    local mimeType=$(file -b --mime-type "$1")
+    if [[ $mimeType == text/* ]]; then
+        mimeType="${mimeType};charset=utf-8"
+    fi
+    echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')"
+}
+
+# Get the weather
+weather() {
+    curl -s "wttr.in/${1:-}"
+}
+
+# Show the path with one directory per line
+path() {
+    echo "$PATH" | tr ':' '\n'
+}
+
+# Find a process by name
+psgrep() {
+    ps aux | grep -v grep | grep -i -e VSZ -e "$@"
+}
+
+# Kill process by name
+killnamed() {
+    ps aux | grep -v grep | grep "$@" | awk '{print $2}' | xargs kill -9
+}
+
+# Create a new script file with shebang and make it executable
+newscript() {
+    if [ -z "$1" ]; then
+        echo "Usage: newscript <filename>"
+        return 1
+    fi
+    echo "#!/bin/bash" > "$1"
+    echo "" >> "$1"
+    chmod +x "$1"
+    "${EDITOR:-vim}" "$1"
+}
+
+# Git: Create a new branch and switch to it
+gnb() {
+    if [ -z "$1" ]; then
+        echo "Usage: gnb <branch-name>"
+        return 1
+    fi
+    git checkout -b "$1"
+}
+
+# Git: Delete local branches that have been merged
+gitclean() {
+    git branch --merged | grep -v "\*\|main\|master\|develop" | xargs -n 1 git branch -d
+}
+
+# Show disk usage of current directory
+ducks() {
+    du -cks * | sort -rn | head -11
+}
+
+# HTTP server in current directory
+serve() {
+    local port="${1:-8000}"
+    echo "Serving HTTP on 0.0.0.0 port $port ..."
+    python3 -m http.server "$port"
+}
+
+# Calculate simple math expressions
+calc() {
+    echo "$*" | bc -l
+}
+
+# Generate a random string
+randstr() {
+    local length="${1:-32}"
+    LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c "$length"
+    echo
+}
+
+# Show colors
+colors() {
+    for i in {0..255}; do
+        printf "\x1b[38;5;${i}mcolor%-5i\x1b[0m" $i
+        if [ $(((i + 1) % 8)) == 0 ]; then
+            echo
+        fi
+    done
+}
+
+# Quick note taking
+note() {
+    local note_file="$HOME/.notes/$(date +%Y%m%d).md"
+    mkdir -p "$HOME/.notes"
+    if [ $# -eq 0 ]; then
+        "${EDITOR:-vim}" "$note_file"
+    else
+        echo "$(date '+%H:%M:%S') - $*" >> "$note_file"
+    fi
+}
+
+# Man page with colored output
+man() {
+    env \
+        LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+        LESS_TERMCAP_md=$(printf "\e[1;31m") \
+        LESS_TERMCAP_me=$(printf "\e[0m") \
+        LESS_TERMCAP_se=$(printf "\e[0m") \
+        LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+        LESS_TERMCAP_ue=$(printf "\e[0m") \
+        LESS_TERMCAP_us=$(printf "\e[1;32m") \
+        man "$@"
+}

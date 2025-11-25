@@ -3,6 +3,22 @@ backups/
 
 # Local configuration files (should not be tracked)
 *.local
+.env.local
+.bashrc.local
+.zshrc.local
+.gitconfig.local
+.path.local
+
+# Sensitive files
+*.key
+*.pem
+*_rsa
+*_dsa
+*.p12
+*.pfx
+credentials.json
+secrets.yml
+.env
 
 # OS generated files
 .DS_Store
@@ -12,6 +28,7 @@ backups/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # Editor files
 *.swp
@@ -19,6 +36,19 @@ Thumbs.db
 *~
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
 
 # Logs
 *.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# SSH sockets
+.ssh/sockets/
+
+# Notes directory
+.notes/

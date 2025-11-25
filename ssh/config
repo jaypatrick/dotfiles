@@ -1,0 +1,85 @@
+# ~/.ssh/config - SSH client configuration
+
+# Global settings
+Host *
+    # Use SSH protocol 2 only
+    Protocol 2
+
+    # Enable connection multiplexing for faster subsequent connections
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%r@%h-%p
+    ControlPersist 600
+
+    # Keep connections alive
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+    # Enable compression
+    Compression yes
+
+    # Use modern key exchange algorithms
+    KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+
+    # Use modern ciphers
+    Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+
+    # Use modern MACs
+    MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+
+    # Disable weak host key algorithms
+    HostKeyAlgorithms ssh-ed25519,ssh-rsa,ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,ecdsa-sha2-nistp256
+
+    # Forward ssh agent (be careful with this on untrusted hosts)
+    ForwardAgent no
+
+    # Don't use insecure GSSAPI
+    GSSAPIAuthentication no
+
+    # Verify host keys
+    StrictHostKeyChecking ask
+
+    # Hash known hosts for privacy
+    HashKnownHosts yes
+
+    # Use visual host key for verification
+    VisualHostKey yes
+
+    # Preferred authentication methods
+    PreferredAuthentications publickey,keyboard-interactive,password
+
+    # Send locale environment variables
+    SendEnv LANG LC_*
+
+# Example host configurations (uncomment and customize as needed)
+
+# Example: GitHub
+# Host github.com
+#     HostName github.com
+#     User git
+#     IdentityFile ~/.ssh/id_ed25519_github
+#     IdentitiesOnly yes
+
+# Example: GitLab
+# Host gitlab.com
+#     HostName gitlab.com
+#     User git
+#     IdentityFile ~/.ssh/id_ed25519_gitlab
+#     IdentitiesOnly yes
+
+# Example: Personal server
+# Host myserver
+#     HostName example.com
+#     User myusername
+#     Port 22
+#     IdentityFile ~/.ssh/id_ed25519
+#     IdentitiesOnly yes
+
+# Example: Server with jump host (bastion)
+# Host internal-server
+#     HostName 10.0.0.10
+#     User myusername
+#     ProxyJump bastion.example.com
+#     IdentityFile ~/.ssh/id_ed25519
+
+# Include local SSH config (not tracked in git)
+Include ~/.ssh/config.local
